@@ -60,7 +60,7 @@ The time spent on different parts of the simulation was recorded, showing most t
 | Select   | 5.655  | 22.16    | 14.61    |
 | Store    | 108.43 | 58.64    | 29.87    |
 
-![loading of each part](fig/fig3.png)
+![loading of each part](fig/fig3.png=250x)
 ![speedup of each part](fig/fig4.png)
 
 OMP was more efficient than pthreads, especially in synchronization, where OMP optimizes barrier release among threads.
