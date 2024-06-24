@@ -45,8 +45,8 @@ OMP showed the best performance, with pthreads performing comparably well, achie
 | Thread 4 | 1692.55 | 517.05           | 535.02   |
 
 The graphs below depict execution time and speedup for various methods.
-![execution time](fig/fig1.png)
-![speedup](fig/fig2.png)
+<img src="fig/fig1.png" width="600">
+<img src="fig/fig2.png" width="600">
 MPI did not complete due to the high communication overhead in the later stages of the simulation, where fewer tasks remain, causing workers to continually request tasks from the master host.
 
 ## Experimental Breakdown
@@ -60,9 +60,8 @@ The time spent on different parts of the simulation was recorded, showing most t
 | Select   | 5.655  | 22.16    | 14.61    |
 | Store    | 108.43 | 58.64    | 29.87    |
 
-<img src="fig/fig3.png" width="400" >
-![loading of each part](fig/fig3.png | width=100)
-![speedup of each part](fig/fig4.png)
+<img src="fig/fig3.png" width="600">
+<img src="fig/fig4.png" width="600">
 
 OMP was more efficient than pthreads, especially in synchronization, where OMP optimizes barrier release among threads.
 
