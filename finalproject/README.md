@@ -1,8 +1,8 @@
 # Parallel Execution of Multi-Player Cooperative Tasks Simulation
 
-I-Ting Ho, Shao-Chun Huang, Wei-Chun Lin  
-Graduate Institute of Computer Science and Engineering 310551143, Institute of Network Engineering 310552041, Department of Computer Science and Engineering 0716332
-k232421@gmail.com, shanan2224466@gmail.com, wjlim.cs07@nycu.edu.tw  
+- I-Ting Ho, Institute of Computer Science and Engineering (k232421@gmail.com,)
+- Shao-Chun Huang, Institute of Network Engineering (shanan2224466@gmail.com)
+- Wei-Chun Lin, Department of Computer Science and Engineering (wjlim.cs07@nycu.edu.tw)
 
 ## Abstract
 
@@ -45,8 +45,10 @@ OMP showed the best performance, with pthreads performing comparably well, achie
 | Thread 4 | 1692.55 | 517.05           | 535.02   |
 
 The graphs below depict execution time and speedup for various methods.
+
 <img src="fig/fig1.png" width="600">
 <img src="fig/fig2.png" width="600">
+
 MPI did not complete due to the high communication overhead in the later stages of the simulation, where fewer tasks remain, causing workers to continually request tasks from the master host.
 
 ## Experimental Breakdown
