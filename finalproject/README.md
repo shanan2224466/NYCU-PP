@@ -60,6 +60,7 @@ The time spent on different parts of the simulation was recorded, showing most t
 | Select   | 5.655  | 22.16    | 14.61    |
 | Store    | 108.43 | 58.64    | 29.87    |
 
+<img src="fig/fig3.png" width="400" >
 ![loading of each part](fig/fig3.png | width=100)
 ![speedup of each part](fig/fig4.png)
 
