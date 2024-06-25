@@ -8,10 +8,19 @@ void* pth(void* threadId) {
             int receipt = last_select_task[worker];
             int local_load = last_local_load[worker];
 
+            if (print_detail)
+                cout << "Worker " << worker << " select task " << receipt << " last time and remain " << local_load << " works\n";
+
             if (local_load > 0) {
                 local_load -= workers[worker].task_efficient[receipt];
 
+                if (print_detail)
+                    cout << "Worker " << worker << " can finish 100 * " << workers[worker].task_efficient[receipt] << " works in unit time, now remain " << local_load << " works\n";
+
                 if (local_load <= 0) {
+                    if (print_detail)
+                        cout << "Worker " << worker << " finish his work\n";
+
                     local_load = 0;
                     __sync_fetch_and_add(&tasks[receipt].complete, unit_load);
 
@@ -19,6 +28,9 @@ void* pth(void* threadId) {
                     if ((tasks[receipt].complete >= tasks[receipt].total_load) && (tasks[receipt].end == 0)) {
                         tasks[receipt].end = 1;
                         complete_tasks++;
+
+                        if (print_detail)
+                            cout << "Task " << receipt << " complete by worker " << worker << "\n";
                     }
                     pthread_mutex_unlock(&pth_lock[receipt][0]);
 
@@ -26,6 +38,9 @@ void* pth(void* threadId) {
                     if (tasks[receipt].left > 0) {
                         tasks[receipt].left -= unit_load;
                         local_load = unit_load;
+
+                        if (print_detail)
+                            cout << "Worker " << worker << " receives " << local_load << " works from task " << receipt << "\n";
                     }
                     pthread_mutex_unlock(&pth_lock[receipt][1]);
                 }
@@ -43,9 +58,17 @@ void* pth(void* threadId) {
 
                         tasks[s].current_num++;
                         receipt = s;
+
+                        if (print_detail)
+                            cout << "Worker " << worker << " receives task " << receipt << " successfully\n";
+
                         tasks[receipt].left -= unit_load;
                         local_load = unit_load;
                         pthread_mutex_unlock(&pth_lock[s][1]);
+
+                        if (print_detail)
+                            cout << "Worker " << worker << " receives " << local_load << " works from task " << receipt << "\n";
+
                         break;
                     }
                     pthread_mutex_unlock(&pth_lock[s][1]);

@@ -8,10 +8,19 @@ void omp() {
             int receipt = last_select_task[worker];
             int local_load = last_local_load[worker];
 
+            if (print_detail)
+                cout << "Worker " << worker << " select task " << receipt << " last time and remain " << local_load << " works\n";
+
             if (local_load > 0) {
                 local_load -= workers[worker].task_efficient[receipt];
 
+                if (print_detail)
+                    cout << "Worker " << worker << " can finish 100 * " << workers[worker].task_efficient[receipt] << " works in unit time, now remain " << local_load << " works\n";
+
                 if (local_load <= 0) {
+                    if (print_detail)
+                        cout << "Worker " << worker << " finish his work\n";
+
                     local_load = 0;
 
                     __sync_fetch_and_add(&tasks[receipt].complete, unit_load);
@@ -20,6 +29,9 @@ void omp() {
                     if ((tasks[receipt].complete >= tasks[receipt].total_load) && (tasks[receipt].end == 0)) {
                         tasks[receipt].end = 1;
                         __sync_add_and_fetch(&complete_tasks, 1);
+
+                        if (print_detail)
+                            cout << "Task " << receipt << " complete by worker " << worker << "\n";
                     }
                     omp_unset_lock(&omp_lock[receipt][0]);
 
@@ -27,6 +39,9 @@ void omp() {
                     if (tasks[receipt].left > 0) {
                         tasks[receipt].left -= unit_load;
                         local_load = unit_load;
+
+                        if (print_detail)
+                            cout << "Worker " << worker << " receives " << local_load << " works from task " << receipt << "\n";
                     }
                     omp_unset_lock(&omp_lock[receipt][1]);
                 }
@@ -43,9 +58,17 @@ void omp() {
 
                         tasks[s].current_num++;
                         receipt = s;
+
+                        if (print_detail)
+                            cout << "Worker " << worker << " receives task " << receipt << " successfully\n";
+
                         tasks[receipt].left -= unit_load;
                         local_load = unit_load;
                         omp_unset_lock(&omp_lock[s][1]);
+
+                        if (print_detail)
+                            cout << "Worker " << worker << " receives " << local_load << " works from task " << receipt << "\n";
+
                         break;
                     }
                     omp_unset_lock(&omp_lock[s][1]);

@@ -50,9 +50,9 @@ void resetGlobals() {
 }
 
 void printinfo(const char *test) {
-	long int elapsed_time = (TimeEnd.tv_sec - TimeStart.tv_sec) * 1000000 + (TimeEnd.tv_usec - TimeStart.tv_usec);
-	cout << "*************** " << test << " ******************" << endl;
-	cout << "Virtual complete round = " << world_time << "\n";
+    long int elapsed_time = (TimeEnd.tv_sec - TimeStart.tv_sec) * 1000000 + (TimeEnd.tv_usec - TimeStart.tv_usec);
+    cout << "*************** " << test << " ******************" << endl;
+    cout << "Virtual complete round = " << world_time << "\n";
     cout << "Major process time = " << elapsed_time << "ms\n";
 }
 
@@ -81,7 +81,7 @@ int main() {
     serial();
     gettimeofday(&TimeEnd, NULL);
 
-	printinfo("serial");
+    printinfo("serial");
     resetGlobals();
     initializeTasks();
 
@@ -89,13 +89,13 @@ int main() {
     omp();
     gettimeofday(&TimeEnd, NULL);
 
-	printinfo("omp");
+    printinfo("omp");
     resetGlobals();
     initializeTasks();
 
     gettimeofday(&TimeStart, NULL);
     int threadData[NUM_THREAD];
-	pthread_t threadId[NUM_THREAD];
+    pthread_t threadId[NUM_THREAD];
     for (int i = 0; i < NUM_THREAD; ++i) {
         threadData[i] = i;
         pthread_create(&threadId[i], NULL, pth, (void*)&threadData[i]);
@@ -105,7 +105,7 @@ int main() {
     }
     gettimeofday(&TimeEnd, NULL);
 
-	printinfo("pthread");
+    printinfo("pthread");
     destory();
     freeResources();
 
