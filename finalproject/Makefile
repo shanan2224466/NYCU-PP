@@ -1,16 +1,25 @@
 CXX := g++
 CXXFLAGS := -I./common -O3 -std=c++17 -Wall
 
-all: serial parallel_omp parallel_pthread
+# Object files
+OBJS := serial.o parallel_omp.o parallel_pthread.o main.o
 
-serial: serial_project.cpp
-	$(CXX) $(CXXFLAGS) serial_project.cpp -o serial
+all: main
 
-parallel_omp: parallel_project_omp.cpp
-	$(CXX) $(CXXFLAGS) -fopenmp parallel_project_omp.cpp -o parallel_omp
+main.o: main.cpp def.h
+	$(CXX) $(CXXFLAGS) -c main.cpp -o main.o
 
-parallel_pthread: parallel_project_pthread.cpp
-	$(CXX) $(CXXFLAGS) -pthread parallel_project_pthread.cpp -o parallel_pthread
+serial.o: serial_project.cpp def.h
+	$(CXX) $(CXXFLAGS) -c serial_project.cpp -o serial.o
+
+parallel_omp.o: parallel_project_omp.cpp def.h
+	$(CXX) $(CXXFLAGS) -fopenmp -c parallel_project_omp.cpp -o parallel_omp.o
+
+parallel_pthread.o: parallel_project_pthread.cpp def.h
+	$(CXX) $(CXXFLAGS) -pthread -c parallel_project_pthread.cpp -o parallel_pthread.o
+
+main: $(OBJS)
+	$(CXX) $(CXXFLAGS) -fopenmp -pthread $(OBJS) -o main
 
 clean:
-	rm -f serial parallel_omp parallel_pthread
+	rm -f *.o main

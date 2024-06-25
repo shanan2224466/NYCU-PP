@@ -1,6 +1,6 @@
 # Parallel Execution of Multi-Player Cooperative Tasks Simulation
 
-- I-Ting Ho, Institute of Computer Science and Engineering (k232421@gmail.com,)
+- I-Ting Ho, Institute of Computer Science and Engineering (k232421@gmail.com)
 - Shao-Chun Huang, Institute of Network Engineering (shanan2224466@gmail.com)
 - Wei-Chun Lin, Department of Computer Science and Engineering (wjlim.cs07@nycu.edu.tw)
 
@@ -44,7 +44,7 @@ OMP showed the best performance, with pthreads performing comparably well, achie
 | Thread 2 | 1692.55 | 939.09           | 988.76   |
 | Thread 4 | 1692.55 | 517.05           | 535.02   |
 
-The graphs below depict execution time and speedup for various methods.
+The graphs below depict execution time and speedup for various methods (omp b is ours).
 
 <img src="fig/fig1.png" width="600">
 <img src="fig/fig2.png" width="600">
