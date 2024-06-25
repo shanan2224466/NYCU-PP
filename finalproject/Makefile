@@ -1,16 +1,16 @@
-CXX := gcc
-CXXFLAGS := -I./common -O0 -std=c11 -Wall
+CXX := g++
+CXXFLAGS := -I./common -O3 -std=c++17 -Wall
 
-all: s p p2
+all: serial parallel_omp parallel_pthread
 
-p2: Project_v3p_part_pthread.c
-	$(CXX) $(CXXFLAGS) -pthread Project_v3p_part_pthread.c -o p2
+serial: serial_project.cpp
+	$(CXX) $(CXXFLAGS) serial_project.cpp -o serial
 
-s: Project_v3_part.c
-	$(CXX) $(CXXFLAGS) Project_v3_part.c -o s
+parallel_omp: parallel_project_omp.cpp
+	$(CXX) $(CXXFLAGS) -fopenmp parallel_project_omp.cpp -o parallel_omp
 
-p: Project_v3p_part.c
-	$(CXX) $(CXXFLAGS) -fopenmp Project_v3p_part.c -o p
+parallel_pthread: parallel_project_pthread.cpp
+	$(CXX) $(CXXFLAGS) -pthread parallel_project_pthread.cpp -o parallel_pthread
 
 clean:
-	rm -f p s p2
+	rm -f serial parallel_omp parallel_pthread
