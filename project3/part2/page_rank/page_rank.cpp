@@ -27,7 +27,6 @@ void pageRank(Graph g, double *solution, double damping, double convergence)
   {
     solution[i] = equal_prob;
   }
-
   /*
      For PP students: Implement the page rank algorithm here.  You
      are expected to parallelize the algorithm using openMP.  Your
@@ -56,4 +55,62 @@ void pageRank(Graph g, double *solution, double damping, double convergence)
      }
 
    */
+  int converged = 0, i, j;
+  double *newScore = (double*)malloc(sizeof(double) * g->num_nodes), global_diff;
+
+  while (!converged)
+  {
+    // Compute score_new[vi] for all nodes vi this round.
+    #pragma omp parallel for private(j)
+    for (i = 0; i < g->num_nodes; i++)
+    {
+      double weight = 0.0;
+
+      // Sum over all nodes vj reachable from incoming edges.
+      for (j = 0; j < incoming_size(g, i); j++)
+      {
+        // weight = score_old[vj] / number of edges leaving vj
+        weight += solution[g->incoming_edges[g->incoming_starts[i] + j]] / outgoing_size(g, g->incoming_edges[g->incoming_starts[i] + j]);
+      }
+
+      // score_new[vi] = (damping * weight) + (1.0 - damping) / numNodes
+      newScore[i] = (damping * weight) + (1.0 - damping) / g->num_nodes;
+    }
+
+    // score_new[vi] += sum over all nodes v in graph with no outgoing edges
+    double tmp = 0.0;
+    for (j = 0; j < g->num_nodes; j++)
+    {
+      // tmp is the total summary of all score_old[v] when v has no outgoing edges.
+      if (outgoing_begin(g, j) == outgoing_end(g, j))
+        tmp += solution[j];
+    }
+
+    // Renew tmp.
+    tmp = tmp * damping / g->num_nodes;
+
+    // Sum the tmp to every vi score_new[vi].
+    #pragma omp parallel for
+    for (i = 0; i < g->num_nodes; i++)
+      newScore[i] += tmp;
+
+    // global_diff = sum over all nodes vi { abs(score_new[vi] - score_old[vi]) };
+    global_diff = 0.0;
+    for(i = 0; i <g->num_nodes; i++)
+    {
+      double diff = solution[i] - newScore[i];
+      global_diff += abs(diff);
+    }
+
+    // Test whether the algorithm has converged.
+    converged = (global_diff < convergence);
+
+    // Replace the score_old[vi] last round with the score_new[vi] this round.
+    #pragma omp parallel for
+    for(i = 0; i <g->num_nodes; i++)
+    {
+      solution[i] = newScore[i];
+    }
+  }
+  free(newScore);
 }

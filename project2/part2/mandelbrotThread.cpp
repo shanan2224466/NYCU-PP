@@ -35,7 +35,31 @@ void workerThreadStart(WorkerArgs *const args)
     // program that uses two threads, thread 0 could compute the top
     // half of the image and thread 1 could compute the bottom half.
 
-    printf("Hello world from thread %d\n", args->threadId);
+    double startTime = CycleTimer::currentSeconds();
+
+    int n = 2;
+
+    // Calculate how many rows for each thread roughly.
+    int load = args->height / (args->numThreads * n);
+
+    // Which row should the thread be start in.
+    int startRow = args->threadId * n;
+
+    // If the height isn't divided by the numThreads, then some rows could be ignored. Share those rows fairly to the first some threads.
+    if (args->height % args->numThreads && args->threadId < (args->height - args->numThreads * n * load) / n)
+        load++;
+
+    // Base on how many rows will the thread processes, it will has equivalent loop amount. After processing each row, change the startRow to the next one.
+    // Threads should be interleaving sharing these rows. The interval of the same thread have a row is numThreads * n.
+    for (int i = 0; i < load; i++)
+    {
+        mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, startRow, n, args->maxIterations, args->output);
+        startRow += args->numThreads * n;
+    }
+    double endTime = CycleTimer::currentSeconds();
+
+    // You can print out the time for a thread processes its own tasks.
+    // printf("thread %d spends [%.3f] ms.\n", args->threadId, (endTime - startTime) * 1000);
 }
 
 //
@@ -66,6 +90,8 @@ void mandelbrotThread(
         // TODO FOR PP STUDENTS: You may or may not wish to modify
         // the per-thread arguments here.  The code below copies the
         // same arguments for each thread
+
+        // I didn't change anything here.
         args[i].x0 = x0;
         args[i].y0 = y0;
         args[i].x1 = x1;
@@ -77,11 +103,11 @@ void mandelbrotThread(
         args[i].output = output;
 
         args[i].threadId = i;
-    }
 
     // Spawn the worker threads.  Note that only numThreads-1 std::threads
     // are created and the main application thread is used as a worker
     // as well.
+    }
     for (int i = 1; i < numThreads; i++)
     {
         workers[i] = std::thread(workerThreadStart, &args[i]);

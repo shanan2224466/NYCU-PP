@@ -29,16 +29,14 @@ void conj_grad(int colidx[],
         r[j] = x[j];
         p[j] = r[j];
     }
-
     //---------------------------------------------------------------------
     // rho = r.r
     // Now, obtain the norm of r: First, sum squares of r elements locally...
     //---------------------------------------------------------------------
     for (j = 0; j < lastcol - firstcol + 1; j++)
     {
-        rho = rho + r[j] * r[j];
+        rho += r[j] * r[j];
     }
-
     //---------------------------------------------------------------------
     //---->
     // The conj grad iteration loop
@@ -57,6 +55,7 @@ void conj_grad(int colidx[],
         //       unrolled-by-two version is some 10% faster.
         //       The unrolled-by-8 version below is significantly faster
         //       on the Cray t3d - overall speed of code is 1.5 times faster.
+        #pragma omp parallel for private(sum)
         for (j = 0; j < lastrow - firstrow + 1; j++)
         {
             sum = 0.0;
@@ -66,7 +65,6 @@ void conj_grad(int colidx[],
             }
             q[j] = sum;
         }
-
         //---------------------------------------------------------------------
         // Obtain p.q
         //---------------------------------------------------------------------
@@ -75,7 +73,6 @@ void conj_grad(int colidx[],
         {
             d = d + p[j] * q[j];
         }
-
         //---------------------------------------------------------------------
         // Obtain alpha = rho / (p.q)
         //---------------------------------------------------------------------
@@ -119,13 +116,14 @@ void conj_grad(int colidx[],
             p[j] = r[j] + beta * p[j];
         }
     } // end of do cgit=1,cgitmax
-
+    
     //---------------------------------------------------------------------
     // Compute residual norm explicitly:  ||r|| = ||x - A.z||
     // First, form A.z
     // The partition submatrix-vector multiply
     //---------------------------------------------------------------------
     sum = 0.0;
+    #pragma omp parallel for private(d)
     for (j = 0; j < lastrow - firstrow + 1; j++)
     {
         d = 0.0;
@@ -135,7 +133,6 @@ void conj_grad(int colidx[],
         }
         r[j] = d;
     }
-
     //---------------------------------------------------------------------
     // At this point, r contains A.z
     //---------------------------------------------------------------------

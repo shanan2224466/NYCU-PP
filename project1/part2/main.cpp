@@ -47,6 +47,7 @@ int main(int argc, char * argv[]) {
     }
   }
 
+  // Problem: "std" has no member std::align_val_t    Solution: Press F1 in VScode, type in ">C/C++: Edit Configurations (UI)". Then change the C++ standard from gnu++14 to gnu++17 or newer version.
   float* values1 = new(std::align_val_t{ 32 }) float[N];
   float* values2 = new(std::align_val_t{ 32 }) float[N];
   double* values3 = new(std::align_val_t{ 32 }) double[N];

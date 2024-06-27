@@ -1,3 +1,4 @@
+#include <stdio.h>
 /*
 
   Note: This code was modified from example code
@@ -37,13 +38,14 @@
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+// https://read01.com/zh-tw/3APOEG.html#.YXalbRpBybi
 static inline int mandel(float c_re, float c_im, int count)
 {
   float z_re = c_re, z_im = c_im;
   int i;
   for (i = 0; i < count; ++i)
   {
-
+    // https://zh.wikipedia.org/wiki/%E6%9B%BC%E5%BE%B7%E5%8D%9A%E9%9B%86%E5%90%88 a trial for theorem two (the first round will tests the |c|) and three (the rest 255 rounds will test |z_i|)
     if (z_re * z_re + z_im * z_im > 4.f)
       break;
 
@@ -85,9 +87,16 @@ void mandelbrotSerial(
     {
       float x = x0 + i * dx;
       float y = y0 + j * dy;
-
+      
       int index = (j * width + i);
       output[index] = mandel(x, y, maxIterations);
+      // if (1)
+      // {
+      //   printf("%.3f ", x);
+      //   printf("%.3f,", y);
+      // }
     }
+  //   if (1)
+  //     printf("\n");
   }
 }

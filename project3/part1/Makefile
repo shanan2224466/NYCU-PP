@@ -14,7 +14,7 @@ OBJS = cg_impl.o \
        ${COMMON}/wtime.o
 
 ${PROGRAMNAME}: config ${PROGRAMNAME}.o ${OBJS}
-	${CLINK} ${CLINKFLAGS} -o ${PROGRAMNAME} ${PROGRAMNAME}.o ${OBJS} ${C_LIB}
+	${CLINK} ${CLINKFLAGS} -g3 -pg -o ${PROGRAMNAME} ${PROGRAMNAME}.o ${OBJS} ${C_LIB}
 
 grade: config grade.o ${OBJS}
 	${CLINK} ${CLINKFLAGS} -o cg_grader grade.o ${OBJS} ref_cg.a def_cg.a ${C_LIB}

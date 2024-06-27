@@ -9,7 +9,6 @@ COMMONDIR=./common
 PPM_CXX=$(COMMONDIR)/ppm.cpp
 PPM_OBJ=$(addprefix $(OBJDIR)/, $(subst $(COMMONDIR)/,, $(PPM_CXX:.cpp=.o)))
 
-
 default: $(APP_NAME)
 
 .PHONY: dirs clean
@@ -22,11 +21,11 @@ clean:
 
 OBJS=$(OBJDIR)/main.o $(OBJDIR)/mandelbrotSerial.o $(OBJDIR)/mandelbrotThread.o $(PPM_OBJ)
 
-$(APP_NAME): dirs $(OBJS)
-		$(CXX) $(CXXFLAGS) -o $@ $(OBJS) -lm -lpthread
+$(APP_NAME): clean dirs $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) -lm -lpthread
 
 $(OBJDIR)/%.o: %.cpp
-		$(CXX) $< $(CXXFLAGS) -c -o $@
+	$(CXX) $< $(CXXFLAGS) -c -o $@
 
 $(OBJDIR)/%.o: $(COMMONDIR)/%.cpp
 	$(CXX) $< $(CXXFLAGS) -c -o $@
