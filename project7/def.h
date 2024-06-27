@@ -8,12 +8,13 @@
 #include <iomanip>
 #include <omp.h>
 #include <pthread.h>
+#include <mpi.h>
 
 // Constants Experssion
 constexpr int DETAIL_OF_PARTTIME = 1;
 constexpr int USETIMEIDX = 4;
 constexpr int NUM_THREAD = 4;
-constexpr int UL = 100;
+constexpr int UNIT_LOAD = 100;
 constexpr int TIMEPIECE = 20;
 constexpr int SINGLELOAD = 100000;
 constexpr int MAX_NUM = 5;
@@ -43,7 +44,6 @@ struct WorkerInfo {
 
 // Global Variables
 extern bool print_detail;
-extern int unit_load;
 extern int world_time;
 extern int complete_tasks;
 
@@ -58,5 +58,6 @@ extern vector<int> last_select_task;
 void  serial(void);
 void  omp(void);
 void* pth(void* threadId);
+void  mpi(void);
 
 #endif

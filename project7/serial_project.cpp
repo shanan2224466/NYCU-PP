@@ -20,7 +20,7 @@ void serial() {
                     if (print_detail)
                         cout << "Worker " << worker << " finish his work\n";
 
-                    tasks[receipt].complete += unit_load;
+                    tasks[receipt].complete += UNIT_LOAD;
 
                     if (tasks[receipt].complete >= tasks[receipt].total_load) {
                         complete_tasks++;
@@ -30,8 +30,8 @@ void serial() {
                     }
 
                     if (tasks[receipt].left > 0) {
-                        tasks[receipt].left -= unit_load;
-                        local_load = unit_load;
+                        tasks[receipt].left -= UNIT_LOAD;
+                        local_load = UNIT_LOAD;
 
                         if (print_detail)
                             cout << "Worker " << worker << " receives " << local_load << " works from task " << receipt << "\n";
@@ -53,8 +53,8 @@ void serial() {
                         if (print_detail)
                             cout << "Worker " << worker << " receives task " << receipt << " successfully\n";
 
-                        tasks[receipt].left -= unit_load;
-                        local_load = unit_load;
+                        tasks[receipt].left -= UNIT_LOAD;
+                        local_load = UNIT_LOAD;
 
                         if (print_detail)
                             cout << "Worker " << worker << " receives " << local_load << " works from task " << receipt << "\n";

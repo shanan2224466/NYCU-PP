@@ -22,7 +22,7 @@ void* pth(void* threadId) {
                         cout << "Worker " << worker << " finish his work\n";
 
                     local_load = 0;
-                    __sync_fetch_and_add(&tasks[receipt].complete, unit_load);
+                    __sync_fetch_and_add(&tasks[receipt].complete, UNIT_LOAD);
 
                     pthread_mutex_lock(&pth_lock[receipt][0]);
                     if ((tasks[receipt].complete >= tasks[receipt].total_load) && (tasks[receipt].end == 0)) {
@@ -36,8 +36,8 @@ void* pth(void* threadId) {
 
                     pthread_mutex_lock(&pth_lock[receipt][1]);
                     if (tasks[receipt].left > 0) {
-                        tasks[receipt].left -= unit_load;
-                        local_load = unit_load;
+                        tasks[receipt].left -= UNIT_LOAD;
+                        local_load = UNIT_LOAD;
 
                         if (print_detail)
                             cout << "Worker " << worker << " receives " << local_load << " works from task " << receipt << "\n";
@@ -62,8 +62,8 @@ void* pth(void* threadId) {
                         if (print_detail)
                             cout << "Worker " << worker << " receives task " << receipt << " successfully\n";
 
-                        tasks[receipt].left -= unit_load;
-                        local_load = unit_load;
+                        tasks[receipt].left -= UNIT_LOAD;
+                        local_load = UNIT_LOAD;
                         pthread_mutex_unlock(&pth_lock[s][1]);
 
                         if (print_detail)

@@ -1,8 +1,8 @@
-CXX := g++
+CXX := mpic++
 CXXFLAGS := -I./common -O3 -std=c++17 -Wall
 
 # Object files
-OBJS := serial.o parallel_omp.o parallel_pthread.o main.o
+OBJS := serial.o parallel_omp.o parallel_pthread.o parallel_mpi.o main.o
 
 all: main
 
@@ -17,6 +17,9 @@ parallel_omp.o: parallel_project_omp.cpp def.h
 
 parallel_pthread.o: parallel_project_pthread.cpp def.h
 	$(CXX) $(CXXFLAGS) -pthread -c parallel_project_pthread.cpp -o parallel_pthread.o
+
+parallel_mpi.o: parallel_mpi.cpp def.h
+	$(CXX) $(CXXFLAGS) -c parallel_mpi.cpp -o parallel_mpi.o
 
 main: $(OBJS)
 	$(CXX) $(CXXFLAGS) -fopenmp -pthread $(OBJS) -o main

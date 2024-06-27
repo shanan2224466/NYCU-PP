@@ -23,7 +23,7 @@ void omp() {
 
                     local_load = 0;
 
-                    __sync_fetch_and_add(&tasks[receipt].complete, unit_load);
+                    __sync_fetch_and_add(&tasks[receipt].complete, UNIT_LOAD);
 
                     omp_set_lock(&omp_lock[receipt][0]);
                     if ((tasks[receipt].complete >= tasks[receipt].total_load) && (tasks[receipt].end == 0)) {
@@ -37,8 +37,8 @@ void omp() {
 
                     omp_set_lock(&omp_lock[receipt][1]);
                     if (tasks[receipt].left > 0) {
-                        tasks[receipt].left -= unit_load;
-                        local_load = unit_load;
+                        tasks[receipt].left -= UNIT_LOAD;
+                        local_load = UNIT_LOAD;
 
                         if (print_detail)
                             cout << "Worker " << worker << " receives " << local_load << " works from task " << receipt << "\n";
@@ -62,8 +62,8 @@ void omp() {
                         if (print_detail)
                             cout << "Worker " << worker << " receives task " << receipt << " successfully\n";
 
-                        tasks[receipt].left -= unit_load;
-                        local_load = unit_load;
+                        tasks[receipt].left -= UNIT_LOAD;
+                        local_load = UNIT_LOAD;
                         omp_unset_lock(&omp_lock[s][1]);
 
                         if (print_detail)

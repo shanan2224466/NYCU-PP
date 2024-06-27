@@ -2,7 +2,6 @@
 
 // Global Variables
 bool print_detail = false;
-int unit_load = UL;
 int world_time = 0;
 int complete_tasks = 0;
 
@@ -14,6 +13,18 @@ vector<int> last_select_task(NUM_OF_WORKERS, -1);
 timeval TimeStart, TimeEnd;
 omp_lock_t omp_lock[NUM_OF_TASKS][2];
 pthread_mutex_t pth_lock[NUM_OF_TASKS][2];
+
+string format_with_commas(long long num) {
+    string num_str = to_string(num);
+    int insert_position = num_str.length() - 3;
+
+    while (insert_position > 0) {
+        num_str.insert(insert_position, ",");
+        insert_position -= 3;
+    }
+
+    return num_str;
+}
 
 void initial() {
     for (int i = 0; i < NUM_OF_TASKS; ++i) {
@@ -51,9 +62,9 @@ void resetGlobals() {
 
 void printinfo(const char *test) {
     long int elapsed_time = (TimeEnd.tv_sec - TimeStart.tv_sec) * 1000000 + (TimeEnd.tv_usec - TimeStart.tv_usec);
-    cout << "*************** " << test << " ******************" << endl;
-    cout << "Virtual complete round = " << world_time << "\n";
-    cout << "Major process time = " << elapsed_time << "ms\n";
+    cout << "*************** " << setw(7) << test << "   ******************" << endl;
+    cout << "Virtual rounds = " << world_time << "\n";
+    cout << "Process time = " << setw(7) << format_with_commas(elapsed_time) << "ms\n";
 }
 
 void destory() {
@@ -80,16 +91,16 @@ int main() {
     gettimeofday(&TimeStart, NULL);
     serial();
     gettimeofday(&TimeEnd, NULL);
-
     printinfo("serial");
+
     resetGlobals();
     initializeTasks();
 
     gettimeofday(&TimeStart, NULL);
     omp();
     gettimeofday(&TimeEnd, NULL);
-
     printinfo("omp");
+
     resetGlobals();
     initializeTasks();
 
@@ -104,10 +115,17 @@ int main() {
         pthread_join(threadId[i], NULL);
     }
     gettimeofday(&TimeEnd, NULL);
-
     printinfo("pthread");
+
+    resetGlobals();
+    initializeTasks();
+
+    gettimeofday(&TimeStart, NULL);
+    mpi();
+    gettimeofday(&TimeEnd, NULL);
+    printinfo("mpi");
+
     destory();
     freeResources();
-
     return 0;
 }
